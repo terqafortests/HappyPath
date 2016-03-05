@@ -31,7 +31,7 @@ public class WebBrowser extends ReportManager {
 			System.out.println("Firefox has started");
 			Logger().log(LogStatus.PASS, "Firefox has started");
 		} else if (browser.equalsIgnoreCase("Chrome")) {
-			System.setProperty("webdriver.chrome.driver", "./resources/chromedriver.exe");
+			System.setProperty("webdriver.chrome.driver", "./resources/drivers/chromedriver.exe");
 			driver = new ChromeDriver();
 			System.out.println("Chrome has started");
 			Logger().log(LogStatus.PASS, "Chrome has started");
