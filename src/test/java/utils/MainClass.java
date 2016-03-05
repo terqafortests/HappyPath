@@ -52,6 +52,7 @@ public class MainClass extends WebBrowser {
 		WebElement element = getElement(by);
 		if (element.isDisplayed() & element.getSize().getHeight() > 0 & element.getSize().getWidth() > 0) {
 			element.click();
+			Logger().log(LogStatus.PASS, "Clicked on " + webElement);
 		} else {
 			Logger().log(LogStatus.FAIL,
 					"Cannot click on element: element is not visible on page or it's dimensions are less then 0"
