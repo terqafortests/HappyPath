@@ -149,16 +149,26 @@ public class MainClass extends WebBrowser {
 
 	public void selectFromDropdownText(By dropDownIdent, String text) {
 		Logger().log(LogStatus.INFO, "Trying to select " + text + " from dropdown");
-		Select oSelection = new Select(getElement(dropDownIdent));
-		oSelection.selectByVisibleText(text);
-		Logger().log(LogStatus.PASS, "Selected " + text + " from dropdown");
+		try {
+			Select oSelection = new Select(getElement(dropDownIdent));
+			oSelection.selectByVisibleText(text);
+			Logger().log(LogStatus.PASS, "Selected " + text + " from dropdown");
+		} catch (Exception e) {
+			Logger().log(LogStatus.FAIL, "Cannot locate element with text: " + text);
+			Assert.assertTrue(1 == 2);
+		}
 	}
 
 	public void selectFromDropdownValue(By dropDownIdent, String value) {
 		Logger().log(LogStatus.INFO, "Trying to select " + value + " from dropdown");
-		Select oSelection = new Select(getElement(dropDownIdent));
-		oSelection.selectByValue(value);
-		Logger().log(LogStatus.PASS, "Selected " + value + " from dropdown");
+		try {
+			Select oSelection = new Select(getElement(dropDownIdent));
+			oSelection.selectByValue(value);
+			Logger().log(LogStatus.PASS, "Selected " + value + " from dropdown");
+		} catch (Exception e) {
+			Logger().log(LogStatus.FAIL, "Cannot locate element with text: " + value);
+			Assert.assertTrue(1 == 2);
+		}
 	}
 
 }
