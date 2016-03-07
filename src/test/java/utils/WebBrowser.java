@@ -7,38 +7,37 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class WebBrowser extends ReportManager {
 
 	private static ThreadLocal<WebDriver> threadLocalDriver = new ThreadLocal<WebDriver>();
 
-	private WebDriver driver = threadLocalDriver.get();
+	public WebDriver driver = threadLocalDriver.get();
 
 	@Parameters("browser")
 	@BeforeTest
 	public void initWebBrowser(@Optional(value = "Chrome") String browser) {
 
-		startTest(this.getClass().getSimpleName(), "");
-
 		if (browser.equalsIgnoreCase("Firefox")) {
 			driver = new FirefoxDriver();
 			System.out.println("Firefox has started");
-			Logger().log(LogStatus.PASS, "Firefox has started");
+			// Logger().log(LogStatus.PASS, "Firefox has started");
 		} else if (browser.equalsIgnoreCase("Chrome")) {
 			System.setProperty("webdriver.chrome.driver", "./resources/drivers/chromedriver.exe");
 			driver = new ChromeDriver();
 			System.out.println("Chrome has started");
-			Logger().log(LogStatus.PASS, "Chrome has started");
+			// Logger().log(LogStatus.PASS, "Chrome has started");
 		} else if (browser.equalsIgnoreCase("IE")) {
 			System.setProperty("webdriver.ie.driver", "./resources/IEDriverServer.exe");
 			driver = new InternetExplorerDriver();
-			Logger().log(LogStatus.PASS, "");
+			// Logger().log(LogStatus.PASS, "");
 		} else if (browser.equalsIgnoreCase("Opera")) {
 			System.setProperty("webdriver.opera.driver", "./resources/operadriver.exe");
 			driver = new OperaDriver();
@@ -54,13 +53,22 @@ public class WebBrowser extends ReportManager {
 		return threadLocalDriver.get();
 	}
 
+	@BeforeMethod
+	public void startReporting() {
+		startTest(getClass().getSimpleName(),"");
+	}
+
+	@AfterMethod
+	public void stopReporting() {
+		closeTest();
+	}
+
 	@AfterTest(alwaysRun = true)
 	public void closeWebBrowser() {
 		if (driver != null) {
 			driver.quit();
 			threadLocalDriver.remove();
 			System.out.println("Browser closed");
-			closeTest();
 		}
 	}
 
