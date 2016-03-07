@@ -12,7 +12,7 @@ public class ReportManager {
 
 	private synchronized static ExtentReports getInstance() {
 		if (extent == null) {
-			extent = new ExtentReports("./Report.html", false);
+			extent = new ExtentReports("./resources/reports/Report.html", true);
 		}
 		return extent;
 	}
