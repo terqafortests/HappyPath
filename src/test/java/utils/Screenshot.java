@@ -9,7 +9,7 @@ import org.openqa.selenium.TakesScreenshot;
 public class Screenshot extends WebBrowser {
 
 	public static String take(String name) {
-		String path = "./screenshots/" + name + ".png";
+		String path = "./resources/reports/screenshots/" + name + ".png";
 		TakesScreenshot screen = (TakesScreenshot) Driver();
 		File source = screen.getScreenshotAs(OutputType.FILE);
 		try {
