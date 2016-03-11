@@ -6,6 +6,7 @@ public class HomePage {
 	
 	public static By userLabel = By.id("userNavLabel"),
 			advancedSearch = By.linkText("Advanced Search..."),
-			homeTab = By.linkText("Home");
+			homeTab = By.linkText("Home"),
+	        allTabs = By.xpath("//li[@id='AllTab_Tab']//a");
 
 }
