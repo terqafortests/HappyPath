@@ -1,7 +1,11 @@
 package utils;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 
@@ -9,7 +13,7 @@ public class ReportManager {
 
 	private static Map<Long, ExtentTest> testThread = new HashMap<Long, ExtentTest>();
 	private static ExtentReports extent;
-
+	
 	private synchronized static ExtentReports getInstance() {
 		if (extent == null) {
 			extent = new ExtentReports("./resources/reports/Report.html", true);
@@ -39,6 +43,35 @@ public class ReportManager {
 
 	public synchronized static void closeReporter() {
 		getInstance().flush();
+	}
+	
+	private String getTestName(Method m) {
+		String testName = null;
+			testName = m.getAnnotation(Test.class).testName();
+		if (testName == null) {
+			testName = getClass().getSimpleName();
+		}
+		return testName;
+	}
+	
+	private String getTestDescription(Method m) {
+		String testDescription = null;
+			testDescription = m.getAnnotation(Test.class).description();
+		if (testDescription == null) {
+			testDescription = "";
+		}
+		return testDescription;
+	}
+
+	@BeforeMethod
+	public void startReporting(Method m) {
+		startTest(getTestName(m), getTestDescription(m));
+	}
+
+	@AfterMethod
+	public void stopReporting() {
+		MainClass.assertAll();
+		closeTest();
 	}
 
 }

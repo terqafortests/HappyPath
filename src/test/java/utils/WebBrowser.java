@@ -7,10 +7,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -20,7 +18,7 @@ public class WebBrowser extends ReportManager {
 	private static ThreadLocal<WebDriver> threadLocalDriver = new ThreadLocal<WebDriver>();
 
 	public WebDriver driver = threadLocalDriver.get();
-
+	
 	@Parameters("browser")
 	@BeforeTest
 	public void initWebBrowser(@Optional(value = "Chrome") String browser) {
@@ -52,16 +50,8 @@ public class WebBrowser extends ReportManager {
 	public static WebDriver Driver() {
 		return threadLocalDriver.get();
 	}
-
-	@BeforeMethod
-	public void startReporting() {
-		startTest(getClass().getSimpleName(),"");
-	}
-
-	@AfterMethod
-	public void stopReporting() {
-		closeTest();
-	}
+	
+	
 
 	@AfterTest(alwaysRun = true)
 	public void closeWebBrowser() {

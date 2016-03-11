@@ -5,7 +5,7 @@ import rfi.pages.RFIPage;
 import utils.MainClass;
 
 public class SendRFLeadTest extends MainClass {
-	@Test
+	@Test(testName = "Create lead in RFI form", description = "Verifies that lead is created")
 	public void sendRFLeadTest() {
 		getPage("http://noahqa-bpp-13fd3e55188.cs17.force.com/rfi/");
 		selectFromDropdownText(RFIPage.title, "Mr");
@@ -14,7 +14,7 @@ public class SendRFLeadTest extends MainClass {
 		enterText(RFIPage.email, "Blabla@mail.com");
 		enterText(RFIPage.phone, "87557645653453");
 		selectFromDropdownText(RFIPage.rUstudingWus, "No");
-		sleepFor(1000);
+		sleepFor(2000);
 		selectFromDropdownText(RFIPage.hearUs, "Advertising");
 		sleepFor(1000);
 		selectFromDropdownText(RFIPage.euUk, "UK (EU) Student");

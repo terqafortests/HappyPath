@@ -6,10 +6,11 @@ import salesforce.pages.LoginPage;
 import utils.MainClass;
 
 public class LoginTest extends MainClass {
-	@Test
+
+	@Test(testName = "Login to Sales Force", description = "Verifies that user is logged in SalesForce")
 	public void loginTest() {
 		getPage("http://test.salesforce.com");
 		LoginPage.login("crmteamfusion@noah_crm_bpp.com.noahqa", "Fusion12345");
-		assertTrue(getElement(HomePage.userLabel).isDisplayed(), "Verifying if user label is displayed");
+		assertTrue("Verifying if logged into Sales Force", getElement(HomePage.userLabel).isDisplayed());
 	}
 }

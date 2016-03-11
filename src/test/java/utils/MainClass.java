@@ -9,10 +9,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class MainClass extends WebBrowser {
+
+	private static SoftAssert sAssert = new SoftAssert();
 
 	public static void getPage(String address) {
 		Logger().log(LogStatus.INFO, "Trying to redirect to " + address);
@@ -35,7 +37,7 @@ public class MainClass extends WebBrowser {
 	}
 
 	public static WebElement getElement(By by) {
-		WebDriverWait wait = new WebDriverWait(Driver(), 60);
+		WebDriverWait wait = new WebDriverWait(Driver(), 30);
 		WebElement element = null;
 		try {
 			element = wait.until(ExpectedConditions.visibilityOf(Driver().findElement(by)));
@@ -133,30 +135,31 @@ public class MainClass extends WebBrowser {
 		} else {
 			Logger().log(LogStatus.FAIL, "Expected: '" + expected + "' Actual: '" + actual + "'"
 					+ Logger().addScreenCapture(Screenshot.take("FAILED_" + new Random().nextInt(1000))));
-			Assert.assertEquals(actual, expected);
+			sAssert.assertEquals(actual, expected);
 		}
 	}
 
-	public static void assertTrue(boolean actual, String beforeMess) {
+	public static void assertTrue(String beforeMess, boolean actual) {
 		Logger().log(LogStatus.INFO, beforeMess);
 		if (actual) {
-			Logger().log(LogStatus.PASS, "Objects match");
+			Logger().log(LogStatus.PASS, "True");
 		} else {
 			Logger().log(LogStatus.FAIL, "Expected: true, but false"
 					+ Logger().addScreenCapture(Screenshot.take("FAILED_" + new Random().nextInt(1000))));
-			Assert.assertTrue(actual);
+			sAssert.assertTrue(actual);
 		}
 	}
 
-	public void selectFromDropdownText(By dropDownIdent, String text) {
+	public static void selectFromDropdownText(By dropDownIdent, String text) {
 		Logger().log(LogStatus.INFO, "Trying to select " + text + " from dropdown");
 		try {
 			Select oSelection = new Select(getElement(dropDownIdent));
 			oSelection.selectByVisibleText(text);
 			Logger().log(LogStatus.PASS, "Selected " + text + " from dropdown");
 		} catch (Exception e) {
-			Logger().log(LogStatus.FAIL, "Cannot locate element with text: " + text);
-			Assert.assertTrue(1 == 2);
+			Logger().log(LogStatus.FAIL, "Cannot locate element with text: " + text
+					+ Logger().addScreenCapture(Screenshot.take("FAILED_" + new Random().nextInt(1000))));
+			sAssert.assertTrue(1 == 2);
 		}
 	}
 
@@ -167,9 +170,14 @@ public class MainClass extends WebBrowser {
 			oSelection.selectByValue(value);
 			Logger().log(LogStatus.PASS, "Selected " + value + " from dropdown");
 		} catch (Exception e) {
-			Logger().log(LogStatus.FAIL, "Cannot locate element with text: " + value);
-			Assert.assertTrue(1 == 2);
+			Logger().log(LogStatus.FAIL, "Cannot locate element with text: " + value
+					+ Logger().addScreenCapture(Screenshot.take("FAILED_" + new Random().nextInt(1000))));
+			sAssert.assertTrue(1 == 2);
 		}
+	}
+
+	public static void assertAll() {
+		sAssert.assertAll();
 	}
 
 }
