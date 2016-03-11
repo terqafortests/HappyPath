@@ -19,8 +19,8 @@ public class ProcessStudentInBannerTest extends MainClass {
 		ExcelUtils.setExcelFile("D://UFTworkspace//HappyPath//BannerFlow//Default.xls", "WorkFlow");
 		ExcelUtils.setCellData(SubmitApplicationTest.bannerID, 1, 0);
 		CMD.RunUftTest("BannerFlow");
-		getPage("http://test.salesforce.com");
-		LoginPage.login("crmteamfusion@noah_crm_bpp.com.noahqa", "Fusion12345");
+		getPage("Sales Force Address");
+		LoginPage.login("uname", "pass");
 		System.out.println("Address " + ConvertLeadToStudentTest.address);
 		sleepFor(2000);
 		getPage(ConvertLeadToStudentTest.address);
