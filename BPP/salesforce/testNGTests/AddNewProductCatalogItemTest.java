@@ -12,7 +12,6 @@ public class AddNewProductCatalogItemTest extends MainClass {
 		CreateProductCatalogItemPage.createNewProductCatalogItem("999546");
 		assertTrue("Verifying if product catalog item was added",
 				getElementText(By.xpath("//td[text()='Programme']/following-sibling::*//a")).length() > 0
-						&& getElement(By.xpath("//td[@id='topButtonRow']/input[@title='Submit Application']"))
-								.isDisplayed());
+						&& isElementDisplayed(By.xpath("//td[@id='topButtonRow']/input[@title='Submit Application']")));
 	}
 }

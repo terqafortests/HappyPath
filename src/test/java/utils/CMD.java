@@ -2,8 +2,9 @@ package utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import com.relevantcodes.extentreports.LogStatus;
 
-public class CMD {
+public class CMD extends MainClass {
 
 	public static String executeCommand(String command) {
 
@@ -23,8 +24,12 @@ public class CMD {
 		return output.toString();
 	}
 	
-	public static void RunUftTest(String testName){
+	public static void RunUftTest(String testName) {
+		System.out.println("Trying to launch UFT Test");
+		Logger().log(LogStatus.INFO, "Trying to launch UFT Test");
 		executeCommand("cmdrv -usr \"D:\\UFTworkspace\\HappyPath\\" + testName + "\\" + testName +".usr\"");
+		Logger().log(LogStatus.INFO, "UFT Test finished");
+		System.out.println("UFT Test finished");
 	}
 
 }

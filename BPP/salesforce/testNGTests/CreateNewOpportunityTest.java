@@ -11,6 +11,6 @@ public class CreateNewOpportunityTest extends MainClass {
 	public void createNewOpportunityTest() {
 		CreateOpportunityPage.createNewOpportunity("SELFFUND", "None");
 		assertTrue("Verifying if opportunity was created",
-				getElement(By.xpath("//td[text()='Opportunity ID']/following-sibling::td[1]//div")).isDisplayed());
+				isElementDisplayed(By.xpath("//td[text()='Opportunity ID']/following-sibling::td[1]//div")));
 	}
 }

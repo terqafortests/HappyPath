@@ -16,7 +16,7 @@ public class ReportManager {
 	
 	private synchronized static ExtentReports getInstance() {
 		if (extent == null) {
-			extent = new ExtentReports("./resources/reports/Report.html", true);
+			extent = new ExtentReports("D:\\workspace\\HappyPath\\resources\\reports\\Report.html", true);
 		}
 		return extent;
 	}
@@ -27,7 +27,7 @@ public class ReportManager {
 		testThread.put(threadID, test);
 		return testThread;
 	}
-
+	
 	public synchronized static ExtentTest Logger() {
 		ExtentTest logger = null;
 		Long threadID = Thread.currentThread().getId();
@@ -48,7 +48,7 @@ public class ReportManager {
 	private String getTestName(Method m) {
 		String testName = null;
 			testName = m.getAnnotation(Test.class).testName();
-		if (testName == null) {
+		if (testName == null || testName == "") {
 			testName = getClass().getSimpleName();
 		}
 		return testName;
@@ -57,7 +57,7 @@ public class ReportManager {
 	private String getTestDescription(Method m) {
 		String testDescription = null;
 			testDescription = m.getAnnotation(Test.class).description();
-		if (testDescription == null) {
+		if (testDescription == null || testDescription == "") {
 			testDescription = "";
 		}
 		return testDescription;
@@ -70,7 +70,6 @@ public class ReportManager {
 
 	@AfterMethod
 	public void stopReporting() {
-		MainClass.assertAll();
 		closeTest();
 	}
 

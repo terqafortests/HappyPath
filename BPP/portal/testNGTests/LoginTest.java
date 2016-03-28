@@ -12,6 +12,6 @@ public class LoginTest extends MainClass {
 	public void loginTest() {
 		getPage("https://bpp-test.apolloglobal.int/ncas/login?service=https://bpp-fusion-test.apolloglobal.int/delegate/fusion-loginconfirm");
 		LoginPage.login(ProcessStudentInBannerTest.uname, ProcessStudentInBannerTest.pass);
-		assertTrue("Veriying if logged into Portal", getElement(HeaderPage.myCalendar).isDisplayed());
+		assertTrue("Veriying if logged into Portal", isElementDisplayed(HeaderPage.myCalendar));
 	}
 }

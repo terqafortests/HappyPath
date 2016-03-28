@@ -17,7 +17,7 @@ public class WebBrowser extends ReportManager {
 
 	private static ThreadLocal<WebDriver> threadLocalDriver = new ThreadLocal<WebDriver>();
 
-	public WebDriver driver = threadLocalDriver.get();
+	private WebDriver driver;
 	
 	@Parameters("browser")
 	@BeforeTest
@@ -26,16 +26,16 @@ public class WebBrowser extends ReportManager {
 		if (browser.equalsIgnoreCase("Firefox")) {
 			driver = new FirefoxDriver();
 			System.out.println("Firefox has started");
-			// Logger().log(LogStatus.PASS, "Firefox has started");
+			//Logger().log(LogStatus.PASS, "Firefox has started");
 		} else if (browser.equalsIgnoreCase("Chrome")) {
 			System.setProperty("webdriver.chrome.driver", "./resources/drivers/chromedriver.exe");
 			driver = new ChromeDriver();
 			System.out.println("Chrome has started");
-			// Logger().log(LogStatus.PASS, "Chrome has started");
+			//Logger().log(LogStatus.PASS, "Chrome has started");
 		} else if (browser.equalsIgnoreCase("IE")) {
 			System.setProperty("webdriver.ie.driver", "./resources/IEDriverServer.exe");
 			driver = new InternetExplorerDriver();
-			// Logger().log(LogStatus.PASS, "");
+			//Logger().log(LogStatus.PASS, "");
 		} else if (browser.equalsIgnoreCase("Opera")) {
 			System.setProperty("webdriver.opera.driver", "./resources/operadriver.exe");
 			driver = new OperaDriver();
@@ -43,7 +43,7 @@ public class WebBrowser extends ReportManager {
 			driver = new HtmlUnitDriver(true);
 		}
 		threadLocalDriver.set(driver);
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 	}
 
