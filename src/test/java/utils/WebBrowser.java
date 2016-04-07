@@ -23,7 +23,7 @@ public class WebBrowser extends ReportManager {
 	@Parameters("browser")
 	@BeforeTest
 	public void initWebBrowser(@Optional(value = "Chrome") String browser) {
-
+		browserName = browser;
 		if (browser.equalsIgnoreCase("Firefox")) {
 			driver = new FirefoxDriver();
 			System.out.println("Firefox has started");
@@ -40,10 +40,11 @@ public class WebBrowser extends ReportManager {
 		} else if (browser.equalsIgnoreCase("Headless")) {
 			driver = new HtmlUnitDriver(true);
 		}
-		threadLocalBrowserName.set(browserName);
+		
 		threadLocalDriver.set(driver);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
+		threadLocalBrowserName.set(browserName);
 	}
 
 	public static WebDriver Driver() {
