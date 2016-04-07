@@ -3,15 +3,12 @@ package utils;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterMethod;
+import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -19,15 +16,24 @@ public class MainClass extends WebBrowser {
 
 	private static SoftAssert sAssert = new SoftAssert();
 
-	public static void getPage(String address) {
-		Logger().log(LogStatus.INFO, "Trying to redirect to " + address);
-		Driver().get(address);
-		String title = Driver().getTitle();
-		if (title.contains("is not available") || title.contains("Problem loading page")) {
-			Logger().log(LogStatus.FATAL, title + Logger().addScreenCapture(Screenshot.take()));
-		} else {
-			Logger().log(LogStatus.PASS, "Redirected to: " + address);
+	private static WebElement getEl(By by) {
+		WebElement element = null;
+		WebDriverWait wait = new WebDriverWait(Driver(), 5);
+		element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+		return element;
+	}
+
+	public static void getPage(String pageAddress) {
+		try {
+			Driver().get(pageAddress);
+			Logger().log(LogStatus.PASS, "Redirected to " + pageAddress);
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Redirecting to " + pageAddress + " ...");
+			Logger().log(LogStatus.FAIL, "Page is not available" + Logger().addScreenCapture(Screenshot.take()));
+			e.printStackTrace();
+			Assert.fail();
 		}
+
 	}
 
 	public static String getCurrUrl() {
@@ -40,45 +46,57 @@ public class MainClass extends WebBrowser {
 	}
 
 	public static WebElement getElement(By by) {
-		WebDriverWait wait = new WebDriverWait(Driver(), 10);
 		WebElement element = null;
 		try {
-			element = wait.until(ExpectedConditions.visibilityOf(Driver().findElement(by)));
-		} catch (NoSuchElementException e) {
-			Logger().log(LogStatus.FATAL, "Cannot find elemnt on the page");
+			element = getEl(by);
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to get element...");
+			Logger().log(LogStatus.FAIL,
+					"Cannot get element " + Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
 		}
 		return element;
 	}
 
-	public static void clickOn(By by, String webElement) {
-		Logger().log(LogStatus.INFO, "Trying to click on " + webElement);
-		WebElement element = getElement(by);
-		if (element.isDisplayed() & element.getSize().getHeight() > 0 & element.getSize().getWidth() > 0) {
+	public static void clickOn(By by, String elementName) {
+		WebElement element = null;
+		try {
+			element = getEl(by);
 			element.click();
-			Logger().log(LogStatus.PASS, "Clicked on " + webElement);
-		} else {
-			Logger().log(LogStatus.FAIL,
-					"Cannot click on element: element is not displayed on page or it's dimensions are 0"
-							+ Logger().addScreenCapture(Screenshot.take()));
-			sAssert.assertTrue(1 == 2);
+			Logger().log(LogStatus.PASS, "Clicked on '" + elementName + "'");
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to click on '" + elementName + "' ...");
+			Logger().log(LogStatus.FAIL, "Cannot click on element '" + elementName + "' "
+					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
+			e.printStackTrace();
+			Assert.fail();
 		}
 	}
 
 	public static void enterText(By by, String text) {
-		Logger().log(LogStatus.INFO, "Trying to enter text: " + text);
-		WebElement element = getElement(by);
-		element.clear();
-		element.sendKeys(text);
-		Logger().log(LogStatus.PASS, "Entered text: " + text);
+		WebElement element = null;
+		try {
+			element = getEl(by);
+			element.clear();
+			element.sendKeys(text);
+			Logger().log(LogStatus.PASS, "Entered text '" + text + "'");
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to enter text '" + text + "'...");
+			Logger().log(LogStatus.FAIL,
+					"Cannot enter text '" + text + "'" + Logger().addScreenCapture(Screenshot.take()) + e.getCause());
+			e.printStackTrace();
+			Assert.fail();
+		}
 	}
 
 	public static void switchToFrame(String frameId) {
 		try {
 			Driver().switchTo().frame(frameId);
-		} catch (NoSuchFrameException e) {
-			Logger().log(LogStatus.FATAL, "Cannot find frame: " + frameId);
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to switch to frame '" + frameId + "'");
+			Logger().log(LogStatus.FAIL, "Cannot find frame: '" + frameId + "'");
 			e.printStackTrace();
+			Assert.fail();
 		}
 	}
 
@@ -91,14 +109,15 @@ public class MainClass extends WebBrowser {
 	}
 
 	public static WebDriver switchToTab(int i) {
-		Logger().log(LogStatus.INFO, "Trying to switch to tab " + i);
 		WebDriver tab = null;
 		try {
 			tab = Driver().switchTo().window(getTabs().get(i));
-			Logger().log(LogStatus.PASS, "Switched to tab " + tab.getTitle());
-		} catch (NoSuchWindowException e) {
+			Logger().log(LogStatus.PASS, "Switched to tab '" + tab.getTitle() + "'");
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to switch to tab " + i);
 			Logger().log(LogStatus.FAIL, "Cannot switch to tab " + i);
 			e.printStackTrace();
+			Assert.fail();
 		}
 		return tab;
 	}
@@ -114,11 +133,31 @@ public class MainClass extends WebBrowser {
 	}
 
 	public static String getElementAtt(By by, String attName) {
-		return getElement(by).getAttribute(attName);
+		String att = null;
+		try {
+			att = getEl(by).getAttribute(attName);
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to get attribute '" + att + "'");
+			Logger().log(LogStatus.FAIL, "Cannot get attribute '" + attName + "'"
+					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
+			e.printStackTrace();
+			Assert.fail();
+		}
+		return att;
 	}
 
 	public static String getElementText(By by) {
-		return getElement(by).getText();
+		String text = null;
+		try {
+			text = getEl(by).getText();
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to get text...");
+			Logger().log(LogStatus.FAIL,
+					"Cannot get text" + Logger().addScreenCapture(Screenshot.take()) + e.getCause());
+			e.printStackTrace();
+			Assert.fail();
+		}
+		return text;
 	}
 
 	public static void switchToDefaultFrame() {
@@ -137,17 +176,19 @@ public class MainClass extends WebBrowser {
 		} else {
 			Logger().log(LogStatus.FAIL, "Expected: '" + expected + "' Actual: '" + actual + "'"
 					+ Logger().addScreenCapture(Screenshot.take()));
-			sAssert.assertEquals(actual, expected);
+			sAssert.fail();
 		}
 	}
 
-	public static void assertTrue(String beforeMess, boolean actual) {
-		Logger().log(LogStatus.INFO, beforeMess);
-		if (actual) {
-			Logger().log(LogStatus.PASS, "True");
-		} else {
-			Logger().log(LogStatus.FAIL, "Expected: true, but false" + Logger().addScreenCapture(Screenshot.take()));
+	public static void assertTrue(String verificationMessage, boolean actual) {
+		Logger().log(LogStatus.INFO, verificationMessage);
+		try {
 			sAssert.assertTrue(actual);
+			Logger().log(LogStatus.PASS, "True");
+		} catch (AssertionError e) {
+			Logger().log(LogStatus.FAIL, "False" + Logger().addScreenCapture(Screenshot.take()) + e.getCause());
+			e.printStackTrace();
+			sAssert.fail();
 		}
 	}
 
@@ -162,26 +203,40 @@ public class MainClass extends WebBrowser {
 			} else {
 				b = false;
 			}
-		} catch (NoSuchElementException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return b;
 	}
 
 	public static void selectFromDropdownText(By dropDownIdent, String text) {
-		Logger().log(LogStatus.INFO, "Trying to select " + text + " from dropdown");
-		Select oSelection = new Select(getElement(dropDownIdent));
-		oSelection.selectByVisibleText(text);
-		Logger().log(LogStatus.PASS, "Selected " + text + " from dropdown");
+		try {
+			Select oSelection = new Select(getEl(dropDownIdent));
+			oSelection.selectByVisibleText(text);
+			Logger().log(LogStatus.PASS, "Selected '" + text + "' from dropdown");
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to select '" + text + "' from dropdown");
+			Logger().log(LogStatus.FAIL, "Cannot select '" + text + "' from dropdown"
+					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
+			e.printStackTrace();
+			Assert.fail();
+		}
 	}
 
 	public void selectFromDropdownValue(By dropDownIdent, String value) {
-		Logger().log(LogStatus.INFO, "Trying to select " + value + " from dropdown");
-		Select oSelection = new Select(getElement(dropDownIdent));
-		oSelection.selectByValue(value);
-		Logger().log(LogStatus.PASS, "Selected " + value + " from dropdown");
+		try {
+			Select oSelection = new Select(getEl(dropDownIdent));
+			oSelection.selectByValue(value);
+			Logger().log(LogStatus.PASS, "Selected '" + value + "' from dropdown");
+		} catch (Exception e) {
+			Logger().log(LogStatus.INFO, "Trying to select '" + value + "' from dropdown");
+			Logger().log(LogStatus.PASS, "Cannot select '" + value + "' from dropdown"
+					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
+			e.printStackTrace();
+			Assert.fail();
+		}
 	}
-	@AfterMethod
+
 	public static void assertAll() {
 		sAssert.assertAll();
 	}

@@ -15,10 +15,11 @@ import org.testng.annotations.Parameters;
 
 public class WebBrowser extends ReportManager {
 
-	private static ThreadLocal<WebDriver> threadLocalDriver = new ThreadLocal<WebDriver>();
-
+	public String browserName;
 	private WebDriver driver;
-	
+	private static ThreadLocal<WebDriver> threadLocalDriver = new ThreadLocal<WebDriver>();
+	private static ThreadLocal<String> threadLocalBrowserName = new ThreadLocal<String>();
+
 	@Parameters("browser")
 	@BeforeTest
 	public void initWebBrowser(@Optional(value = "Chrome") String browser) {
@@ -26,22 +27,20 @@ public class WebBrowser extends ReportManager {
 		if (browser.equalsIgnoreCase("Firefox")) {
 			driver = new FirefoxDriver();
 			System.out.println("Firefox has started");
-			//Logger().log(LogStatus.PASS, "Firefox has started");
 		} else if (browser.equalsIgnoreCase("Chrome")) {
 			System.setProperty("webdriver.chrome.driver", "./resources/drivers/chromedriver.exe");
 			driver = new ChromeDriver();
 			System.out.println("Chrome has started");
-			//Logger().log(LogStatus.PASS, "Chrome has started");
 		} else if (browser.equalsIgnoreCase("IE")) {
 			System.setProperty("webdriver.ie.driver", "./resources/IEDriverServer.exe");
 			driver = new InternetExplorerDriver();
-			//Logger().log(LogStatus.PASS, "");
 		} else if (browser.equalsIgnoreCase("Opera")) {
 			System.setProperty("webdriver.opera.driver", "./resources/operadriver.exe");
 			driver = new OperaDriver();
 		} else if (browser.equalsIgnoreCase("Headless")) {
 			driver = new HtmlUnitDriver(true);
 		}
+		threadLocalBrowserName.set(browserName);
 		threadLocalDriver.set(driver);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
@@ -50,8 +49,10 @@ public class WebBrowser extends ReportManager {
 	public static WebDriver Driver() {
 		return threadLocalDriver.get();
 	}
-	
-	
+
+	public static String getCurrentBrowserName() {
+		return threadLocalBrowserName.get();
+	}
 
 	@AfterTest(alwaysRun = true)
 	public void closeWebBrowser() {

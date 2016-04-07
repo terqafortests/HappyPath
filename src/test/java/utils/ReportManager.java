@@ -16,14 +16,16 @@ public class ReportManager {
 	
 	private synchronized static ExtentReports getInstance() {
 		if (extent == null) {
-			extent = new ExtentReports("D:\\workspace\\HappyPath\\resources\\reports\\Report.html", true);
+			extent = new ExtentReports("./src/test/java/resources/reports/Report.html", true);
 		}
 		return extent;
 	}
 
-	public synchronized static Map<Long, ExtentTest> startTest(String testName, String testDescription) {
+	public synchronized static Map<Long, ExtentTest> startTest(String testName, String testDescription, String ... groups) {
 		Long threadID = Thread.currentThread().getId();
+		
 		ExtentTest test = getInstance().startTest(testName, testDescription);
+		test.assignCategory(groups);
 		testThread.put(threadID, test);
 		return testThread;
 	}
@@ -45,11 +47,23 @@ public class ReportManager {
 		getInstance().flush();
 	}
 	
-	private String getTestName(Method m) {
+	public static String getTestName(Method m) {
 		String testName = null;
+		String address = null;
+		String[] testGroups = m.getAnnotation(Test.class).groups();
+		for (int i = 0; i < testGroups.length; i++) {
+			if (testGroups[i].startsWith("http")) {
+				address = testGroups[i];
+			}
+		}
+		if (address != null) {
+			testName = "<a href=" + "\"" + address + "\""+ "target=_blank alt=This test is linked to test case. Click to open it>" + m.getAnnotation(Test.class).testName() + "</a>";
+		} else {
 			testName = m.getAnnotation(Test.class).testName();
-		if (testName == null || testName == "") {
-			testName = getClass().getSimpleName();
+		}
+
+		if (testName == null || testName.equals("")) {
+			testName = m.getName();
 		}
 		return testName;
 	}
@@ -62,10 +76,27 @@ public class ReportManager {
 		}
 		return testDescription;
 	}
+	
+	public static String getTestGroups(Method m) {
+		String b = "";
+		String[] testGroups = m.getAnnotation(Test.class).groups();
+		try {
+			for (int i = 0; i < testGroups.length; i++) {
+				if (testGroups[i].startsWith("http")) {
+					continue;
+				} else {
+					b = b + " " + testGroups[i] + "; ";				}
 
+			}
+			b = b.substring(0, b.length()-2);
+		} catch (Exception e) {
+		}
+		return b;
+	}
+	
 	@BeforeMethod
 	public void startReporting(Method m) {
-		startTest(getTestName(m), getTestDescription(m));
+		startTest(getTestName(m), getTestDescription(m), getTestGroups(m), WebBrowser.getCurrentBrowserName());
 	}
 
 	@AfterMethod
