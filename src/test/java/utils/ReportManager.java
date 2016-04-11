@@ -80,7 +80,7 @@ public class ReportManager {
 		return testDescription;
 	}
 
-	public static String getTestGroups(Method m) {
+	private static String getTestGroups(Method m) {
 		String b = "";
 		String[] testGroups = m.getAnnotation(Test.class).groups();
 		try {
@@ -100,7 +100,7 @@ public class ReportManager {
 
 	@BeforeMethod
 	public void startReporting(Method m) {
-		startTest(getTestName(m), getTestDescription(m), getTestGroups(m), WebBrowser.getCurrentBrowserName());
+		startTest(getTestName(m), getTestDescription(m), WebBrowser.getCurrentBrowserName(), getTestGroups(m));
 	}
 
 	@AfterMethod

@@ -9,12 +9,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.asserts.SoftAssert;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class MainClass extends WebBrowser {
-
-	private static SoftAssert sAssert = new SoftAssert();
 
 	private static WebElement getEl(By by) {
 		WebElement element = null;
@@ -31,7 +28,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.INFO, "Redirecting to " + pageAddress + " ...");
 			Logger().log(LogStatus.FAIL, "Page is not available" + Logger().addScreenCapture(Screenshot.take()));
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 
 	}
@@ -69,7 +66,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.FAIL, "Cannot click on element '" + elementName + "' "
 					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 	}
 
@@ -85,7 +82,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.FAIL,
 					"Cannot enter text '" + text + "'" + Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 	}
 
@@ -96,7 +93,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.INFO, "Trying to switch to frame '" + frameId + "'");
 			Logger().log(LogStatus.FAIL, "Cannot find frame: '" + frameId + "'");
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 	}
 
@@ -117,7 +114,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.INFO, "Trying to switch to tab " + i);
 			Logger().log(LogStatus.FAIL, "Cannot switch to tab " + i);
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 		return tab;
 	}
@@ -141,7 +138,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.FAIL, "Cannot get attribute '" + attName + "'"
 					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 		return att;
 	}
@@ -155,7 +152,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.FAIL,
 					"Cannot get text" + Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 		return text;
 	}
@@ -171,40 +168,38 @@ public class MainClass extends WebBrowser {
 
 	public static void assertEquals(String beforeMess, Object actual, Object expected) {
 		Logger().log(LogStatus.INFO, beforeMess);
-		if (actual.equals(expected)) {
-			Logger().log(LogStatus.PASS, "Objects match");
-		} else {
+		try {
+			Assert.assertEquals(actual, expected);
+		} catch (AssertionError e) {
 			Logger().log(LogStatus.FAIL, "Expected: '" + expected + "' Actual: '" + actual + "'"
 					+ Logger().addScreenCapture(Screenshot.take()));
-			sAssert.fail();
+			Assert.fail(e.getCause().toString());
 		}
 	}
 
 	public static void assertTrue(String verificationMessage, boolean actual) {
 		Logger().log(LogStatus.INFO, verificationMessage);
 		try {
-			sAssert.assertTrue(actual);
+			Assert.assertTrue(actual);
 			Logger().log(LogStatus.PASS, "True");
 		} catch (AssertionError e) {
-			Logger().log(LogStatus.FAIL, "False" + Logger().addScreenCapture(Screenshot.take()) + e.getCause());
+			Logger().log(LogStatus.FAIL, "False" + Logger().addScreenCapture(Screenshot.take()) + e.getMessage());
 			e.printStackTrace();
-			sAssert.fail();
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 	}
 
 	public static boolean isElementDisplayed(By by) {
-		WebDriverWait wait = new WebDriverWait(Driver(), 2);
 		WebElement element = null;
 		boolean b = false;
 		try {
-			element = wait.until(ExpectedConditions.visibilityOf(Driver().findElement(by)));
+			element = getEl(by);
 			if (element.isDisplayed()) {
 				b = true;
 			} else {
 				b = false;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return b;
 	}
@@ -219,7 +214,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.FAIL, "Cannot select '" + text + "' from dropdown"
 					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail(e.getCause().toString());
 		}
 	}
 
@@ -233,12 +228,13 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.PASS, "Cannot select '" + value + "' from dropdown"
 					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail(e.getCause().toString());
 		}
 	}
 
-	public static void assertAll() {
-		sAssert.assertAll();
-	}
+	public static void waitForAlert() {
+		WebDriverWait wait = new WebDriverWait(Driver(), 5);
+		wait.until(ExpectedConditions.alertIsPresent());
 
+	}
 }

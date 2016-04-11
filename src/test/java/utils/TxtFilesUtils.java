@@ -6,18 +6,18 @@ import java.util.Scanner;
 
 public class TxtFilesUtils {
 
-	public static String searchInFile(String fileName, String searchStr) throws FileNotFoundException {
+	public static boolean searchInFile(String fileName, String searchStr) throws FileNotFoundException {
+		boolean b = false;
 		Scanner scan = new Scanner(new File(fileName));
-		String result = null;
 		while (scan.hasNext()) {
 			String line = scan.nextLine().toString();
 			if (line.contains(searchStr)) {
 				System.out.println(line);
-				result = line + "\n";
+				b = true;
 			}
 		}
 		scan.close();
-		return result;
+		return b;
 	}
 
 }

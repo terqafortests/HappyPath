@@ -40,7 +40,6 @@ public class WebBrowser extends ReportManager {
 		} else if (browser.equalsIgnoreCase("Headless")) {
 			driver = new HtmlUnitDriver(true);
 		}
-		
 		threadLocalDriver.set(driver);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite" parallel="false">
+
+	<listeners>
+		<listener class-name="testNGlisteners.SkipNextTestsOnTestFail" />
+	</listeners>
+
+
+	<test name="Test1">
+		<classes>
+			<class name="salesforce.testNGTests.LoginTest" />
+			<class name="salesforce.testNGTests.CreateNewLeadTest" />
+			<class name="salesforce.testNGTests.ConvertLeadToStudentTest" />
+			<class name="salesforce.testNGTests.CreateNewOpportunityTest" />
+			<class name="salesforce.testNGTests.AddNewProductCatalogItemTest" />
+			<class name="salesforce.testNGTests.SubmitApplicationTest" />
+		</classes>
+	</test>
+
+	<test name="Test2">
+		<classes>
+			<class name="banner.testNGTests.ProcessStudentInBannerTest" />
+		</classes>
+	</test>
+
+	<test name="Test3">
+		<classes>
+			<class name="salesforce.testNGTests.GetCredentialsForStudentTest" />
+		</classes>
+	</test>
+
+	<test name="Test4">
+		<classes>
+			<class name="portal.testNGTests.LoginTest" />
+		</classes>
+	</test>
+</suite> 

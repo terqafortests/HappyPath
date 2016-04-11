@@ -26,25 +26,19 @@ public class CMD extends MainClass {
 		return output.toString();
 	}
 
-	public static void RunUftTest(String testName) {
+	public static void RunUftTest(String testName) throws FileNotFoundException {
 		System.out.println("Trying to launch UFT Test");
 		Logger().log(LogStatus.INFO, "Trying to launch UFT Test");
 		executeCommand("cmdrv -usr \"D:\\UFTworkspace\\HappyPath\\" + testName + "\\" + testName + ".usr\"");
-		String result = null;
-		try {
-			result = TxtFilesUtils.searchInFile("D:\\UFTworkspace\\HappyPath\\" + testName + "\\output.txt", "Error:");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		if (result.contains("Error:")) {
 
-			Logger().log(LogStatus.FAIL, "UFT Test '" + testName + "' Failed\n" + result);
-			System.out.println("UFT Test Failed");
-			Assert.fail();
-		} else {
-			Logger().log(LogStatus.PASS, "UFT Test '" + testName + "' Passed");
-			System.out.println("UFT Test Passed");
-		}
+			if (!TxtFilesUtils.searchInFile("D:\\UFTworkspace\\HappyPath\\" + testName + "\\output.txt", "Error:")) {
+				Logger().log(LogStatus.PASS, "UFT Test '" + testName + "' Passed");
+				System.out.println("UFT Test Passed");
+			} else {
+				Logger().log(LogStatus.FAIL, "UFT Test '" + testName + "' Failed");
+				System.out.println("UFT Test Failed");
+				Assert.fail();
+			}
 		Logger().log(LogStatus.INFO, "UFT Test finished");
 		System.out.println("UFT Test finished");
 	}
