@@ -8,7 +8,8 @@ import utils.MainClass;
 
 public class CreateNewLeadTest extends MainClass {
 
-	@Test(testName = "Create new Lead in Sales Force", description = "Verifies if Lead was created", priority = 1)
+	@Test(testName = "Create new Lead in Sales Force", description = "Verifies if Lead was created", priority = 1, groups = {
+			"Happy Path" })
 	public void createNewLeadTest() {
 		String firstName = DataGenerator.firstName();
 		String lastName = DataGenerator.lastName();
@@ -18,8 +19,9 @@ public class CreateNewLeadTest extends MainClass {
 		System.out.println(firstName + " " + lastName);
 	}
 
-	@Test(testName = "Add new address to Lead", description = "Verifies if address was added", priority = 2)
-	public void addAddressToLead() {
+	@Test(testName = "Add new address to Lead", description = "Verifies if address was added", priority = 2, groups = {
+			"Happy Path " })
+	public void addAddressToLeadTest() {
 		CreateLeadPage.addAddressToLead(DataGenerator.address());
 		assertTrue("Verifying if address was added", getElementText(By.id("Name_ileinner")).length() > 0);
 	}

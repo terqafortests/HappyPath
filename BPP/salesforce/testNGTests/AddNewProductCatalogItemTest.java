@@ -7,7 +7,8 @@ import utils.MainClass;
 
 public class AddNewProductCatalogItemTest extends MainClass {
 
-	@Test(testName = "Add product catalog item", description = "Verifies if product item was added")
+	@Test(testName = "Add product catalog item", description = "Verifies if product item was added", groups = {
+			"Happy Path" })
 	public void addNewProductCatalogItemTest() {
 		CreateProductCatalogItemPage.createNewProductCatalogItem("999546");
 		assertTrue("Verifying if product catalog item was added",

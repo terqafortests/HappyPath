@@ -7,7 +7,8 @@ import utils.MainClass;
 
 public class CreateNewOpportunityTest extends MainClass {
 
-	@Test(testName = "Create new opprotunity for student", description = "Verifies if opprortunity was created")
+	@Test(testName = "Create new opprotunity for student", description = "Verifies if opprortunity was created", groups = {
+			"Happy Path" })
 	public void createNewOpportunityTest() {
 		CreateOpportunityPage.createNewOpportunity("SELFFUND", "None");
 		assertTrue("Verifying if opportunity was created",

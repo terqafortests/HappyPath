@@ -7,11 +7,12 @@ import salesforce.pages.CreateLeadPage;
 import utils.MainClass;
 
 public class ConvertLeadToStudentTest extends MainClass {
-	
+
 	public static String address;
-	
-	@Test(testName = "Convert Lead to Student", description = "Verifies if Lead is converted to Student")
-	public void convertLeadToStudent() {
+
+	@Test(testName = "Convert Lead to Student", description = "Verifies if Lead is converted to Student", groups = {
+			"Happy Path" })
+	public void convertLeadToStudentTest() {
 		clickOn(By.xpath("//td[text()='Lead']/following-sibling::*//a"), "Lead Link");
 		clickOn(CreateLeadPage.getProfID, "Get Profile ID Button");
 		sleepFor(4000);
@@ -30,5 +31,5 @@ public class ConvertLeadToStudentTest extends MainClass {
 				getElementText(By.id("RecordType_ileinner")).contains("Student Account"));
 
 	}
-	
+
 }
