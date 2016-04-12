@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,11 +12,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import com.relevantcodes.extentreports.LogStatus;
 
+
 public class MainClass extends WebBrowser {
 
 	private static WebElement getEl(By by) {
 		WebElement element = null;
-		WebDriverWait wait = new WebDriverWait(Driver(), 5);
+		WebDriverWait wait = new WebDriverWait(Driver(), 30);
 		element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
 		return element;
 	}
@@ -23,9 +25,9 @@ public class MainClass extends WebBrowser {
 	public static void getPage(String pageAddress) {
 		try {
 			Driver().get(pageAddress);
-			Logger().log(LogStatus.PASS, "Redirected to " + pageAddress);
+			Logger().log(LogStatus.PASS, "Redirected to '" + pageAddress + "'");
 		} catch (Exception e) {
-			Logger().log(LogStatus.INFO, "Redirecting to " + pageAddress + " ...");
+			Logger().log(LogStatus.INFO, "Redirecting to '" + pageAddress + "' ...");
 			Logger().log(LogStatus.FAIL, "Page is not available" + Logger().addScreenCapture(Screenshot.take()));
 			e.printStackTrace();
 			Assert.fail("Failed", e.fillInStackTrace());
@@ -173,7 +175,7 @@ public class MainClass extends WebBrowser {
 		} catch (AssertionError e) {
 			Logger().log(LogStatus.FAIL, "Expected: '" + expected + "' Actual: '" + actual + "'"
 					+ Logger().addScreenCapture(Screenshot.take()));
-			Assert.fail(e.getCause().toString());
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 	}
 
@@ -214,7 +216,7 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.FAIL, "Cannot select '" + text + "' from dropdown"
 					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
-			Assert.fail(e.getCause().toString());
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 	}
 
@@ -228,13 +230,14 @@ public class MainClass extends WebBrowser {
 			Logger().log(LogStatus.PASS, "Cannot select '" + value + "' from dropdown"
 					+ Logger().addScreenCapture(Screenshot.take()) + e.getCause());
 			e.printStackTrace();
-			Assert.fail(e.getCause().toString());
+			Assert.fail("Failed", e.fillInStackTrace());
 		}
 	}
 
-	public static void waitForAlert() {
+	public static void waitForAlert() {	 
 		WebDriverWait wait = new WebDriverWait(Driver(), 5);
 		wait.until(ExpectedConditions.alertIsPresent());
-
+		Alert alert = Driver().switchTo().alert();
+		alert.accept();
 	}
 }
