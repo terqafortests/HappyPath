@@ -27,20 +27,20 @@ public class CMD extends MainClass {
 	}
 
 	public static void RunUftTest(String testName) throws FileNotFoundException {
-		System.out.println("Trying to launch UFT Test");
+		System.out.println("[INFO] Trying to launch UFT Test");
 		Logger().log(LogStatus.INFO, "Trying to launch UFT Test");
 		executeCommand("cmdrv -usr \"D:\\UFTworkspace\\HappyPath\\" + testName + "\\" + testName + ".usr\"");
 
 			if (!TxtFilesUtils.searchInFile("D:\\UFTworkspace\\HappyPath\\" + testName + "\\output.txt", "Error:")) {
 				Logger().log(LogStatus.PASS, "UFT Test '" + testName + "' Passed");
-				System.out.println("UFT Test Passed");
+				System.out.println("[INFO] UFT Test Passed");
 			} else {
 				Logger().log(LogStatus.FAIL, "UFT Test '" + testName + "' Failed");
-				System.out.println("UFT Test Failed");
-				Assert.fail();
+				System.out.println("[FAILED] UFT Test Failed");
+				Assert.fail("UFT Test " + testName + " Failed");
 			}
 		Logger().log(LogStatus.INFO, "UFT Test finished");
-		System.out.println("UFT Test finished");
+		System.out.println("[INFO] UFT Test finished");
 	}
 
 }

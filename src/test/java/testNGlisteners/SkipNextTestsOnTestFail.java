@@ -29,7 +29,7 @@ public class SkipNextTestsOnTestFail extends MainClass implements ITestListener 
 	@Override
 	public void onTestFailure(ITestResult result) {
 		System.out.println(
-				"Invoked SkipNextTestsOnTestFail listener: previous test has FAILED. Next tests will be skipped");
+				"[INFO] Invoked " + getClass().getSimpleName() + " listener: this test has FAILED. Next tests will be skipped");
 		b = false;
 	}
 

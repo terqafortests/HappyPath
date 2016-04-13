@@ -7,8 +7,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.ISuite;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -30,6 +32,11 @@ public class WebBrowser extends ReportManager {
 	private static ThreadLocal<AndroidDriver> threadLocalMdriver = new ThreadLocal<AndroidDriver>();
 	
 	private static ThreadLocal<String> threadLocalBrowserName = new ThreadLocal<String>();
+	
+	@BeforeSuite
+	private void beginSuite(ISuite suite){
+		System.out.println("[INFO] Started suite '" + suite.getName() + "'");
+	}
 
 	@SuppressWarnings("rawtypes")
 	@Parameters({ "browser", "device", "OSv" })
@@ -39,18 +46,18 @@ public class WebBrowser extends ReportManager {
 		browserName = browser;
 		if (browser.equalsIgnoreCase("Firefox")) {
 			driver = new FirefoxDriver();
-			System.out.println("Firefox has started");
+			System.out.println("[INFO] Firefox has started");
 		} else if (browser.equalsIgnoreCase("Chrome")) {
 			System.setProperty("webdriver.chrome.driver", "./resources/drivers/chromedriver.exe");
 			driver = new ChromeDriver();
-			System.out.println("Chrome has started");
+			System.out.println("[INFO] Chrome has started");
 		} else if (browser.equalsIgnoreCase("AndroidWebBrowser")) {
 			ServerArguments serverArguments = new ServerArguments();
 			serverArguments.setArgument("--address", "127.0.0.1");
 			serverArguments.setArgument("--port", 4723);
 			AppiumServer appiumServer = new AppiumServer(serverArguments);
 			appiumServer.startServer();
-			System.out.println("Appium server started");
+			System.out.println("[INFO] Appium server started");
 			DesiredCapabilities capabilities = new DesiredCapabilities();
 			capabilities.setCapability("deviceName", device);
 			capabilities.setCapability("platformName", "Android");
@@ -82,12 +89,12 @@ public class WebBrowser extends ReportManager {
 		if (driver != null) {
 			driver.quit();
 			threadLocalDriver.remove();
-			System.out.println("Browser closed");
+			System.out.println("[INFO] Browser closed");
 		}
 	}
 
 	@AfterSuite(alwaysRun = true)
-	public void flush() {
+	public void flushReporter() {
 		closeReporter();
 	}
 

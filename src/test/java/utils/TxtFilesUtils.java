@@ -12,7 +12,7 @@ public class TxtFilesUtils {
 		while (scan.hasNext()) {
 			String line = scan.nextLine().toString();
 			if (line.contains(searchStr)) {
-				System.out.println(line);
+				System.out.println("[INFO] " + line);
 				b = true;
 			}
 		}

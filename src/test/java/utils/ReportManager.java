@@ -3,6 +3,7 @@ package utils;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -101,11 +102,29 @@ public class ReportManager {
 	@BeforeMethod
 	public void startReporting(Method m) {
 		startTest(getTestName(m), getTestDescription(m), WebBrowser.getCurrentBrowserName(), getTestGroups(m));
+		System.out.println(
+				"--------------------------------------------------------------------------------------------------------");
+		System.out.println("[INFO] Started test '" + getTestName(m) + "' Groups: '" + getTestGroups(m) + "'");
 	}
 
 	@AfterMethod
-	public void stopReporting() {
+	public void stopReporting(ITestResult result) {
 		closeTest();
+		int res = result.getStatus();
+		switch (res) {
+		case 1: {
+			System.out.println("[INFO] Test method finished with status: PASSED");
+			break;
+		}
+		case 2: {
+			System.out.println("[FAILED] Test method finished with status: FAILED");
+			break;
+		}
+		case 3: {
+			System.out.println("[INFO] Test method finished with status: SKIPPED");
+			break;
+		}
+		}
 	}
 
 }
